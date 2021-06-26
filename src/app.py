@@ -4,7 +4,6 @@ from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 
 from models import *
-import datetime
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
