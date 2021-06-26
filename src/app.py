@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 api = Api(app)
 
-DATABASE_URI = "mysql://root:0000@127.0.0.1:3306/freee_test_web_db?charset=utf8"
+DATABASE_URI = "mysql://root:0000@127.0.0.1/freee_test_web_db?charset=utf8"
 engine = create_engine(DATABASE_URI, encoding='utf8')
 SessionClass = sessionmaker(engine)
 session = SessionClass()
@@ -36,7 +36,7 @@ class Recipes(Resource):
             session.commit()
             # title同じレシピをdbから取得
             added_recipe = session.query(RecipesModel).filter(RecipesModel.title == body_field['title']).all()
-            added_recipe = [data.to_dict() for data in added_recipe]
+            added_recipe = [added_recipe[-1].to_dict()]
             response_json = {
                 "message": "Recipe successfully created!",
                 "recipe": added_recipe
@@ -63,7 +63,7 @@ class RecipeID(Resource):
         if len(get_recipes) != 0:
             recipe_list = [recipe.to_dict() for recipe in get_recipes]
             response_json = {'message': 'Recipe details by id',
-                             'recipes': recipe_list}
+                             'recipe': recipe_list}
         else:
             response_json = {'message': 'No Recipe found'}
         return jsonify(response_json)
@@ -107,4 +107,4 @@ api.add_resource(RecipeID, '/recipes/<recipe_id>')
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0')
